@@ -1,32 +1,6 @@
-/*package com.example.reconocimiento_imagenes
-
-import androidx.compose.foundation.layout.*
-import androidx.compose.material3.*
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
-
-@Composable
-fun Pantalla2(onIrAPantalla3: () -> Unit, onVolver: () -> Unit) {
-    Column(
-        modifier = Modifier.fillMaxSize(),
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        Text(text = "Pantalla 2", style = MaterialTheme.typography.headlineLarge)
-        Spacer(modifier = Modifier.height(16.dp))
-        Button(onClick = onIrAPantalla3) {
-            Text("Ir a Pantalla 3")
-        }
-        TextButton(onClick = onVolver) {
-            Text("Volver")
-        }
-    }
-}*/
-
 package com.example.reconocimiento_imagenes
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -35,6 +9,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 
@@ -65,18 +41,15 @@ fun Pantalla2(onVolver: () -> Unit) {
                 horizontalArrangement = Arrangement.spacedBy(16.dp)
             ) {
                 ContenedorResultado(
-                    texto = "Imagen\nresultado 1",
                     modifier = Modifier.weight(1f)
                 )
                 ContenedorResultado(
-                    texto = "Imagen\nresultado 2",
                     modifier = Modifier.weight(1f)
                 )
             }
 
             // Imagen Resultado 3 (Centrada abajo de las otras dos)
             ContenedorResultado(
-                texto = "Imagen\nResultado 3",
                 modifier = Modifier
                     .fillMaxWidth(0.5f) // Más angosta que la fila superior
                     .aspectRatio(1f)
@@ -109,17 +82,18 @@ fun Pantalla2(onVolver: () -> Unit) {
  * Componente reutilizable para los cuadros de imagen resultado
  */
 @Composable
-fun ContenedorResultado(texto: String, modifier: Modifier = Modifier) {
+fun ContenedorResultado(modifier: Modifier = Modifier) {
     Box(
         modifier = modifier
             .aspectRatio(1f) // Mantiene forma cuadrada
             .border(2.dp, Color.Gray, RoundedCornerShape(24.dp)),
         contentAlignment = Alignment.Center
     ) {
-        Text(
-            text = texto,
-            textAlign = TextAlign.Center,
-            style = MaterialTheme.typography.bodyLarge
+        Image(
+            painter = painterResource(id = R.drawable.ic_launcher_background),
+            contentDescription = null,
+            modifier = Modifier.fillMaxSize(),
+            contentScale = ContentScale.Crop
         )
     }
 }
