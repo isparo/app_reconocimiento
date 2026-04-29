@@ -1,21 +1,61 @@
 package com.example.reconocimiento_imagenes
 
+import android.content.Context
+import android.net.Uri
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
-import androidx.compose.runtime.Composable
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.core.content.FileProvider
+import coil.compose.AsyncImage
+import java.io.File
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 
 @Composable
 fun Pantalla1(onIrAPantalla2: () -> Unit) {
+    val context = LocalContext.current
+    var imageUri by remember { mutableStateOf<Uri?>(null) }
+    var tempUri by remember { mutableStateOf<Uri?>(null) }
+
+    val launcher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.GetContent()
+    ) { uri: Uri? ->
+        imageUri = uri
+    }
+
+    val cameraLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.TakePicture()
+    ) { success ->
+        if (success) {
+            imageUri = tempUri
+        }
+    }
+
+    fun createImageUri(): Uri {
+        val timeStamp = SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault()).format(Date())
+        val storageDir = context.getExternalFilesDir("Pictures")
+        val file = File.createTempFile("JPEG_${timeStamp}_", ".jpg", storageDir)
+        return FileProvider.getUriForFile(
+            context,
+            "${context.packageName}.fileprovider",
+            file
+        )
+    }
+
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -45,12 +85,21 @@ fun Pantalla1(onIrAPantalla2: () -> Unit) {
                     .border(2.dp, Color.Gray, RoundedCornerShape(24.dp)),
                 contentAlignment = Alignment.Center
             ) {
-                Image(
-                    painter = painterResource(id = R.drawable.ic_launcher_background),
-                    contentDescription = "Vista Previa",
-                    modifier = Modifier.fillMaxSize(),
-                    contentScale = ContentScale.Crop
-                )
+                if (imageUri != null) {
+                    AsyncImage(
+                        model = imageUri,
+                        contentDescription = "Vista Previa",
+                        modifier = Modifier.fillMaxSize(),
+                        contentScale = ContentScale.Crop
+                    )
+                } else {
+                    Image(
+                        painter = painterResource(id = R.drawable.ic_launcher_background),
+                        contentDescription = "Vista Previa",
+                        modifier = Modifier.fillMaxSize(),
+                        contentScale = ContentScale.Crop
+                    )
+                }
             }
 
             // Fila de botones Seleccionar y Tomar Foto
@@ -59,17 +108,21 @@ fun Pantalla1(onIrAPantalla2: () -> Unit) {
                 horizontalArrangement = Arrangement.SpaceEvenly
             ) {
                 OutlinedButton(
-                    onClick = { /* Acción Seleccionar */ },
+                    onClick = { launcher.launch("image/*") },
                     shape = RoundedCornerShape(4.dp)
                 ) {
-                    Text("Boton Seleccionar")
+                    Text("Seleccionar")
                 }
 
                 OutlinedButton(
-                    onClick = { /* Acción Tomar foto */ },
+                    onClick = {
+                        val uri = createImageUri()
+                        tempUri = uri
+                        cameraLauncher.launch(uri)
+                    },
                     shape = RoundedCornerShape(4.dp)
                 ) {
-                    Text("Boton Tomar\nfoto", textAlign = TextAlign.Center)
+                    Text("Tomar\nfoto", textAlign = TextAlign.Center)
                 }
             }
 
