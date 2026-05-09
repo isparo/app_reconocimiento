@@ -27,7 +27,7 @@ import java.util.Locale
 
 @Composable
 fun Pantalla1(
-    viewModel: ImageAnalysisViewModel,
+    viewModel: StabilityImageAnalysisViewModel,
     onIrAPantalla2: () -> Unit
 ) {
     val context = LocalContext.current
