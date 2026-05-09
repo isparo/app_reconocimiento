@@ -37,7 +37,7 @@ class ImageAnalysisViewModel : ViewModel() {
         .writeTimeout(90, TimeUnit.SECONDS)
         .build()
 
-    private val geminiApiKey = "token-xxxx"
+    private val geminiApiKey = "token-api"
     private val apiUrl = "https://generativelanguage.googleapis.com/v1beta/models/gemini-3.1-flash-image-preview:generateContent"
 
     fun clearError() {
