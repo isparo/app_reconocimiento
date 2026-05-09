@@ -1,5 +1,6 @@
 package com.example.reconocimiento_imagenes
 
+import android.graphics.Bitmap
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
@@ -9,13 +10,19 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 
 @Composable
-fun Pantalla2(onVolver: () -> Unit) {
+fun Pantalla2(
+    viewModel: ImageAnalysisViewModel,
+    onVolver: () -> Unit
+) {
+    val images = viewModel.generatedImages
+
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -41,15 +48,18 @@ fun Pantalla2(onVolver: () -> Unit) {
                 horizontalArrangement = Arrangement.spacedBy(16.dp)
             ) {
                 ContenedorResultado(
+                    bitmap = images.getOrNull(0),
                     modifier = Modifier.weight(1f)
                 )
                 ContenedorResultado(
+                    bitmap = images.getOrNull(1),
                     modifier = Modifier.weight(1f)
                 )
             }
 
             // Imagen Resultado 3 (Centrada abajo de las otras dos)
             ContenedorResultado(
+                bitmap = images.getOrNull(2),
                 modifier = Modifier
                     .fillMaxWidth(0.5f) // Más angosta que la fila superior
                     .aspectRatio(1f)
@@ -66,11 +76,11 @@ fun Pantalla2(onVolver: () -> Unit) {
                 horizontalAlignment = Alignment.Start
             ) {
                 Text(
-                    text = "- Texto descripcion",
+                    text = "- Pieza reconstruida",
                     style = MaterialTheme.typography.headlineSmall
                 )
                 Text(
-                    text = "- Texto dato curioso",
+                    text = "- Propuesta de coloración histórica",
                     style = MaterialTheme.typography.headlineSmall
                 )
             }
@@ -82,18 +92,27 @@ fun Pantalla2(onVolver: () -> Unit) {
  * Componente reutilizable para los cuadros de imagen resultado
  */
 @Composable
-fun ContenedorResultado(modifier: Modifier = Modifier) {
+fun ContenedorResultado(bitmap: Bitmap?, modifier: Modifier = Modifier) {
     Box(
         modifier = modifier
             .aspectRatio(1f) // Mantiene forma cuadrada
             .border(2.dp, Color.Gray, RoundedCornerShape(24.dp)),
         contentAlignment = Alignment.Center
     ) {
-        Image(
-            painter = painterResource(id = R.drawable.ic_launcher_background),
-            contentDescription = null,
-            modifier = Modifier.fillMaxSize(),
-            contentScale = ContentScale.Crop
-        )
+        if (bitmap != null) {
+            Image(
+                bitmap = bitmap.asImageBitmap(),
+                contentDescription = null,
+                modifier = Modifier.fillMaxSize(),
+                contentScale = ContentScale.Crop
+            )
+        } else {
+            Image(
+                painter = painterResource(id = R.drawable.ic_launcher_background),
+                contentDescription = null,
+                modifier = Modifier.fillMaxSize(),
+                contentScale = ContentScale.Crop
+            )
+        }
     }
 }

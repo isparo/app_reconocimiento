@@ -26,10 +26,27 @@ import java.util.Date
 import java.util.Locale
 
 @Composable
-fun Pantalla1(onIrAPantalla2: () -> Unit) {
+fun Pantalla1(
+    viewModel: ImageAnalysisViewModel,
+    onIrAPantalla2: () -> Unit
+) {
     val context = LocalContext.current
     var imageUri by remember { mutableStateOf<Uri?>(null) }
     var tempUri by remember { mutableStateOf<Uri?>(null) }
+
+    // Diálogo de error
+    if (viewModel.errorMessage != null) {
+        AlertDialog(
+            onDismissRequest = { viewModel.clearError() },
+            title = { Text("Error") },
+            text = { Text(viewModel.errorMessage!!) },
+            confirmButton = {
+                TextButton(onClick = { viewModel.clearError() }) {
+                    Text("OK")
+                }
+            }
+        )
+    }
 
     val launcher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.GetContent()
@@ -109,6 +126,7 @@ fun Pantalla1(onIrAPantalla2: () -> Unit) {
             ) {
                 OutlinedButton(
                     onClick = { launcher.launch("image/*") },
+                    enabled = !viewModel.isLoading,
                     shape = RoundedCornerShape(4.dp)
                 ) {
                     Text("Seleccionar")
@@ -120,6 +138,7 @@ fun Pantalla1(onIrAPantalla2: () -> Unit) {
                         tempUri = uri
                         cameraLauncher.launch(uri)
                     },
+                    enabled = !viewModel.isLoading,
                     shape = RoundedCornerShape(4.dp)
                 ) {
                     Text("Tomar\nfoto", textAlign = TextAlign.Center)
@@ -135,16 +154,28 @@ fun Pantalla1(onIrAPantalla2: () -> Unit) {
 
             Spacer(modifier = Modifier.weight(1.0f))
 
-            // Botón Analizar (Inferior Derecha)
-            OutlinedButton(
-                onClick = onIrAPantalla2,
-                modifier = Modifier
-                    .align(Alignment.End)
-                    .padding(bottom = 20.dp),
-                shape = RoundedCornerShape(4.dp),
-                contentPadding = PaddingValues(horizontal = 32.dp, vertical = 16.dp)
-            ) {
-                Text("Boton Analizar")
+            if (viewModel.isLoading) {
+                CircularProgressIndicator(
+                    modifier = Modifier
+                        .align(Alignment.CenterHorizontally)
+                        .padding(bottom = 20.dp)
+                )
+            } else {
+                // Botón Analizar (Inferior Derecha)
+                OutlinedButton(
+                    onClick = {
+                        viewModel.analyzeImage(context, imageUri) {
+                            onIrAPantalla2()
+                        }
+                    },
+                    modifier = Modifier
+                        .align(Alignment.End)
+                        .padding(bottom = 20.dp),
+                    shape = RoundedCornerShape(4.dp),
+                    contentPadding = PaddingValues(horizontal = 32.dp, vertical = 16.dp)
+                ) {
+                    Text("Analizar")
+                }
             }
         }
     }

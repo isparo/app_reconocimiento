@@ -10,6 +10,7 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.reconocimiento_imagenes.ui.theme.ReconocimientoimagenesTheme
 
 class MainActivity : ComponentActivity() {
@@ -19,6 +20,7 @@ class MainActivity : ComponentActivity() {
         setContent {
             ReconocimientoimagenesTheme {
                 val navController = rememberNavController()
+                val viewModel: ImageAnalysisViewModel = viewModel()
 
                 Scaffold { innerPadding ->
                     NavHost(
@@ -27,14 +29,14 @@ class MainActivity : ComponentActivity() {
                         modifier = Modifier.padding(innerPadding)
                     ) {
                         composable("pantalla1") {
-                            Pantalla1(onIrAPantalla2 = { navController.navigate("pantalla2") })
+                            Pantalla1(
+                                viewModel = viewModel,
+                                onIrAPantalla2 = { navController.navigate("pantalla2") }
+                            )
                         }
                         composable("pantalla2") {
-                            /*Pantalla2(
-                                onIrAPantalla3 = { navController.navigate("pantalla3") },
-                                onVolver = { navController.popBackStack() }
-                            )*/
                             Pantalla2(
+                                viewModel = viewModel,
                                 onVolver = { navController.popBackStack() }
                             )
                         }
