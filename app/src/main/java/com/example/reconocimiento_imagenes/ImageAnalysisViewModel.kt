@@ -32,13 +32,14 @@ class ImageAnalysisViewModel : ViewModel() {
         private set
 
     private val client = OkHttpClient.Builder()
-        .connectTimeout(90, TimeUnit.SECONDS)
-        .readTimeout(90, TimeUnit.SECONDS)
-        .writeTimeout(90, TimeUnit.SECONDS)
+        .connectTimeout(180, TimeUnit.SECONDS)
+        .readTimeout(180, TimeUnit.SECONDS)
+        .writeTimeout(180, TimeUnit.SECONDS)
         .build()
 
-    private val geminiApiKey = "token-xxxx"
-    private val apiUrl = "https://generativelanguage.googleapis.com/v1beta/models/gemini-3.1-flash-image-preview:generateContent"
+    private val geminiApiKey = "token-xxxxx"
+    //private val apiUrl = "https://generativelanguage.googleapis.com/v1beta/models/gemini-3.1-flash-image-preview:generateContent"
+    private val apiUrl = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-image:generateContent"
 
     fun clearError() {
         errorMessage = null
@@ -65,7 +66,8 @@ class ImageAnalysisViewModel : ViewModel() {
                 }
 
                 val prompts = listOf(
-                    "Reconstruye visualmente esta pieza arqueológica rota como si estuviera completa. Conserva su forma original probable, material cerámico, textura, estilo arqueológico y detalles visibles. Completa las partes faltantes de forma coherente. Fondo neutro.",
+                    "IMPORTANT: DO NOT PROVIDE TEXT. Generate and return a reconstructed image of this artifact using inline_data. Heal cracks and restore missing parts.",
+                    //"Reconstruye visualmente esta pieza arqueológica rota como si estuviera completa. Conserva su forma original probable, material cerámico, textura, estilo arqueológico y detalles visibles. Completa las partes faltantes de forma coherente. Fondo neutro.",
                     //"Reconstruye visualmente esta pieza arqueológica rota como si estuviera completa y muestra una posible versión con colores originales. Conserva el estilo arqueológico, textura cerámica, decoración visible y una coloración probable basada en piezas antiguas similares. Fondo neutro.",
                     //"Genera una segunda alternativa visual de esta pieza arqueológica reconstruida con posibles colores originales. Mantén coherencia histórica, textura cerámica, decoración visible y una apariencia arqueológica realista. Fondo neutro."
                 )
