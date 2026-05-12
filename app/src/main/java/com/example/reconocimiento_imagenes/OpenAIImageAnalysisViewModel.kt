@@ -38,7 +38,7 @@ class OpenAIImageAnalysisViewModel : ViewModel() {
         .writeTimeout(180, TimeUnit.SECONDS)
         .build()
 
-    private val openAIToken = "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"
+    private val openAIToken = "<token>"
     private val apiUrl = "https://api.openai.com/v1/images/edits"
 
     fun clearError() {
