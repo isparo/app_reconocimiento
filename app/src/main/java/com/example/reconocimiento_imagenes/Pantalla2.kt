@@ -18,7 +18,7 @@ import androidx.compose.ui.unit.dp
 
 @Composable
 fun Pantalla2(
-    viewModel: ImageAnalysisViewModel,
+    viewModel: OpenAIImageAnalysisViewModel,
     onVolver: () -> Unit
 ) {
     val images = viewModel.generatedImages
@@ -76,11 +76,15 @@ fun Pantalla2(
                 horizontalAlignment = Alignment.Start
             ) {
                 Text(
-                    text = "- Pieza reconstruida",
+                    text = "- Reconstructed piece",
                     style = MaterialTheme.typography.headlineSmall
                 )
                 Text(
-                    text = "- Propuesta de coloración histórica",
+                    text = "- Historical coloration",
+                    style = MaterialTheme.typography.headlineSmall
+                )
+                Text(
+                    text = "- Alternative coloration",
                     style = MaterialTheme.typography.headlineSmall
                 )
             }

@@ -20,7 +20,7 @@ class MainActivity : ComponentActivity() {
         setContent {
             ReconocimientoimagenesTheme {
                 val navController = rememberNavController()
-                val viewModel: ImageAnalysisViewModel = viewModel()
+                val viewModel: OpenAIImageAnalysisViewModel = viewModel()
 
                 Scaffold { innerPadding ->
                     NavHost(
