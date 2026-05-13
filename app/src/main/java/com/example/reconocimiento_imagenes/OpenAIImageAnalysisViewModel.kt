@@ -68,7 +68,7 @@ class OpenAIImageAnalysisViewModel : ViewModel() {
                 val prompts = listOf(
                     "Reconstruct this damaged archaeological artifact to show how it would have originally looked, restoring missing parts and preserving the ceramic style, material, and texture. Display the result on a neutral background.",
                     //"Reconstruct this damaged archaeological artifact and provide a historical coloration proposal based on similar ancient pieces. Restore missing parts and preserve texture and decorative details. Display the result on a neutral background.",
-                    //"Generate a second alternative historical coloration for this reconstructed archaeological artifact, maintaining historical consistency, ceramic texture, and visible decoration. Display the result on a neutral background."
+                    //"Reconstruct this damaged archaeological artifact and provide a second alternative historical coloration proposal based on similar ancient pieces, maintaining historical consistency, ceramic texture, and decorative details. Display the result on a neutral background."
                 )
 
                 val results = mutableListOf<Bitmap>()
@@ -95,11 +95,10 @@ class OpenAIImageAnalysisViewModel : ViewModel() {
     private suspend fun callOpenAIApi(prompt: String, imageBytes: ByteArray): Bitmap? = withContext(Dispatchers.IO) {
         val requestBody = MultipartBody.Builder()
             .setType(MultipartBody.FORM)
-            .addFormDataPart("model", "dall-e-2")
+            .addFormDataPart("model", "gpt-image-1")
             .addFormDataPart("prompt", prompt)
             .addFormDataPart("n", "1")
             .addFormDataPart("size", "1024x1024")
-            .addFormDataPart("response_format", "b64_json")
             .addFormDataPart(
                 "image",
                 "image.png",
@@ -126,7 +125,11 @@ class OpenAIImageAnalysisViewModel : ViewModel() {
 
             if (!b64Json.isNullOrEmpty()) {
                 val decodedBytes = Base64.decode(b64Json, Base64.DEFAULT)
-                return@withContext BitmapFactory.decodeByteArray(decodedBytes, 0, decodedBytes.size)
+                return@withContext BitmapFactory.decodeByteArray(
+                    decodedBytes,
+                    0,
+                    decodedBytes.size
+                )
             }
             null
         }
